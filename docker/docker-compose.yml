@@ -1,0 +1,59 @@
+# updating this file will just incrementally update the cluster, wont tear it down to build it up
+version: "3"
+services:
+  eurekaserver:
+    image: eurekaserver:1.0.0
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 300M
+      restart_policy:
+        condition: on-failure
+    networks:
+#      every service take place at the same network called webnet in bridge mode
+      - webnet
+  redis:
+    image: redis:alpine
+    volumes:
+      - "/tmp:/tmp"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - webnet
+  datahandler:
+    image: datahandler:1.0.0
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 300M
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - eurekaserver
+    networks:
+      - webnet
+  datahandlerserver:
+    image: datahandlerserver:1.0.0
+    ports:
+      - "8080:8080"
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 300M
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - eurekaserver
+    networks:
+      - webnet
+# webnet is an inner network within the Docker, you should map the ports to be able to call it from the host machine
+networks:
+  webnet:
