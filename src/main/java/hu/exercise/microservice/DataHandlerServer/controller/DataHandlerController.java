@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class DataHandlerController {
 
-    private DataHandlerClient dataHandlerClient;
+    private final DataHandlerClient dataHandlerClient;
 
     @GetMapping("/{id}")
     public String getData(@PathVariable final String id) {
