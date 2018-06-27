@@ -6,6 +6,4 @@ ADD . /resources
 
 EXPOSE 8080
 
-ENV echoserver.environment ProductionWorld
-
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","DataHandlerServer.jar"]
